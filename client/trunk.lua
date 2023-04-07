@@ -66,29 +66,29 @@ RegisterNetEvent('qb-kidnapping:client:SetKidnapping', function(bool)
     isKidnapping = bool
 end)
 
-RegisterNetEvent('qb-trunk:client:KidnapTrunk', function()
-    local closestPlayer, distance = QBCore.Functions.GetClosestPlayer()
+RegisterNetEvent('trunk:client:KidnapTrunk', function()
+    local closestPlayer, distance = ESX.Game.GetPlayersInArea(GetEntityCoords(cache.ped), 5.0)
     if distance ~= -1 and distance < 2 then
         if isKidnapping then
-            local closestVehicle, _ = QBCore.Functions.GetClosestVehicle(GetEntityCoords(cache.ped))
+            local closestVehicle, _ = ESX.Game.GetClosestVehicle(GetEntityCoords(cache.ped))
             if closestVehicle ~= 0 then
                 TriggerEvent('police:client:KidnapPlayer')
                 TriggerServerEvent("police:server:CuffPlayer", GetPlayerServerId(closestPlayer), false)
                 Wait(50)
-                TriggerServerEvent("qb-trunk:server:KidnapTrunk", GetPlayerServerId(closestPlayer), closestVehicle)
+                TriggerServerEvent("trunk:server:KidnapTrunk", GetPlayerServerId(closestPlayer), closestVehicle)
             end
         else
-            ESX.ShowNotification(Lang:t("error.not_kidnapped"), 'error')
+            ESX.ShowNotification(Translations[Config.Local].error.not_kidnapped, 'error')
         end
     end
 end)
 
-RegisterNetEvent('qb-trunk:client:KidnapGetIn', function(veh)
+RegisterNetEvent('trunk:client:KidnapGetIn', function(veh)
     local closestVehicle = veh
     local vehClass = GetVehicleClass(closestVehicle)
-    local plate = QBCore.Functions.GetPlate(closestVehicle)
+    local plate = GetVehicleNumberPlateText(closestVehicle)
     if Config.TrunkClasses[vehClass].allowed then
-        QBCore.Functions.TriggerCallback('qb-trunk:server:getTrunkBusy', function(isBusy)
+        ESX.TriggerServerCallback('trunk:server:getTrunkBusy', function(isBusy)
             if not disabledTrunk[GetEntityModel(closestVehicle)] then
                 if not inTrunk then
                     if not isBusy then
@@ -105,19 +105,19 @@ RegisterNetEvent('qb-trunk:client:KidnapGetIn', function(veh)
                                 end
                                 TaskPlayAnim(cache.ped, "fin_ext_p1-7", "cs_devin_dual-7", 8.0, 8.0, -1, 1, 999.0, 0, 0, 0)
                                 AttachEntityToEntity(cache.ped, closestVehicle, 0, offset.x, offset.y, offset.z, 0, 0, 40.0, 1, 1, 1, 1, 1, 1)
-                                TriggerServerEvent('qb-trunk:server:setTrunkBusy', plate, true)
+                                TriggerServerEvent('trunk:server:setTrunkBusy', plate, true)
                                 inTrunk = true
                                 Wait(500)
                                 SetVehicleDoorShut(closestVehicle, 5, false)
-                                ESX.ShowNotification(Lang:t("success.entered_trunk"), 'success', 4000)
+                                ESX.ShowNotification(Translations[Config.Local].success.entered_trunk, 'success', 4000)
                                 TrunkCam(true)
                                 isKidnapped = true
                             else
-                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Translations[Config.Local].error.trunk_closed, 'error', 2500)
                             end
                         else
                             local vehicle = GetEntityAttachedTo(cache.ped)
-                            plate = QBCore.Functions.GetPlate(vehicle)
+                            plate = GetVehicleNumberPlateText(vehicle)
                             if GetVehicleDoorAngleRatio(vehicle, 5) > 0 then
                                 local vehCoords = GetOffsetFromEntityInWorldCoords(vehicle, 0, -5.0, 0)
                                 DetachEntity(cache.ped, true, true)
@@ -128,31 +128,31 @@ RegisterNetEvent('qb-trunk:client:KidnapGetIn', function(veh)
                                 SetEntityCollision(cache.ped, true, true)
                                 TrunkCam(false)
                             else
-                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Translations[Config.Local].error.trunk_closed, 'error', 2500)
                             end
                         end
                     else
-                        ESX.ShowNotification(Lang:t("error.someone_in_trunk"), 'error', 2500)
+                        ESX.ShowNotification(Translations[Config.Local].error.someone_in_trunk, 'error', 2500)
                     end
                 else
-                    ESX.ShowNotification(Lang:t("error.already_in_trunk"), 'error', 2500)
+                    ESX.ShowNotification(Translations[Config.Local].error.already_in_trunk, 'error', 2500)
                 end
             else
-                ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+                ESX.ShowNotification(Translations[Config.Local].error.cant_enter_trunk, 'error', 2500)
             end
         end, plate)
     else
-        ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+        ESX.ShowNotification(Translations[Config.Local].error.cant_enter_trunk, 'error', 2500)
     end
 end)
 
-RegisterNetEvent('qb-trunk:client:GetIn', function()
-    local closestVehicle, _ = QBCore.Functions.GetClosestVehicle(GetEntityCoords(cache.ped))
+RegisterNetEvent('trunk:client:GetIn', function()
+    local closestVehicle, _ = ESX.Game.GetClosestVehicle(GetEntityCoords(cache.ped))
     if closestVehicle ~= 0 then
         local vehClass = GetVehicleClass(closestVehicle)
-        local plate = QBCore.Functions.GetPlate(closestVehicle)
+        local plate = GetVehicleNumberPlateText(closestVehicle)
         if Config.TrunkClasses[vehClass].allowed then
-            QBCore.Functions.TriggerCallback('qb-trunk:server:getTrunkBusy', function(isBusy)
+            ESX.TriggerServerCallback('trunk:server:getTrunkBusy', function(isBusy)
                 if not disabledTrunk[GetEntityModel(closestVehicle)] then
                     if not inTrunk then
                         if not isBusy then
@@ -168,30 +168,30 @@ RegisterNetEvent('qb-trunk:client:GetIn', function()
                                 end
                                 TaskPlayAnim(cache.ped, "fin_ext_p1-7", "cs_devin_dual-7", 8.0, 8.0, -1, 1, 999.0, 0, 0, 0)
                                 AttachEntityToEntity(cache.ped, closestVehicle, 0, offset.x, offset.y, offset.z, 0, 0, 40.0, 1, 1, 1, 1, 1, 1)
-                                TriggerServerEvent('qb-trunk:server:setTrunkBusy', plate, true)
+                                TriggerServerEvent('trunk:server:setTrunkBusy', plate, true)
                                 inTrunk = true
                                 Wait(500)
                                 SetVehicleDoorShut(closestVehicle, 5, false)
-                                ESX.ShowNotification(Lang:t("success.entered_trunk"), 'success', 4000)
+                                ESX.ShowNotification(Translations[Config.Local].success.entered_trunk, 'success', 4000)
                                 TrunkCam(true)
                             else
-                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Translations[Config.Local].error.trunk_closed, 'error', 2500)
                             end
                         else
-                            ESX.ShowNotification(Lang:t("error.someone_in_trunk"), 'error', 2500)
+                            ESX.ShowNotification(Translations[Config.Local].error.someone_in_trunk, 'error', 2500)
                         end
                     else
-                        ESX.ShowNotification(Lang:t("error.already_in_trunk"), 'error', 2500)
+                        ESX.ShowNotification(Translations[Config.Local].error.already_in_trunk, 'error', 2500)
                     end
                 else
-                    ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+                    ESX.ShowNotification(Translations[Config.Local].error.cant_enter_trunk, 'error', 2500)
                 end
             end, plate)
         else
-            ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+            ESX.ShowNotification(Translations[Config.Local].error.cant_enter_trunk, 'error', 2500)
         end
     else
-        ESX.ShowNotification(Lang:t("error.no_vehicle_found"), 'error', 2500)
+        ESX.ShowNotification(Translations[Config.Local].error.no_vehicle_found, 'error', 2500)
     end
 end)
 
@@ -219,40 +219,40 @@ CreateThread(function()
             if not isKidnapped then
                 local vehicle = GetEntityAttachedTo(cache.ped)
                 local drawPos = GetOffsetFromEntityInWorldCoords(vehicle, 0, -2.5, 0)
-                local plate = QBCore.Functions.GetPlate(vehicle)
+                local plate = GetVehicleNumberPlateText(vehicle)
                 if DoesEntityExist(vehicle) then
                     sleep = 0
-                    DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.75, Lang:t("general.get_out_trunk_button"))
+                    DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.75, Translations[Config.Local].general.get_out_trunk_button)
                     if IsControlJustPressed(0, 38) then
                         if GetVehicleDoorAngleRatio(vehicle, 5) > 0 then
                             local vehCoords = GetOffsetFromEntityInWorldCoords(vehicle, 0, -5.0, 0)
                             DetachEntity(cache.ped, true, true)
                             ClearPedTasks(cache.ped)
                             inTrunk = false
-                            TriggerServerEvent('qb-trunk:server:setTrunkBusy', plate, false)
+                            TriggerServerEvent('trunk:server:setTrunkBusy', plate, false)
                             SetEntityCoords(cache.ped, vehCoords.x, vehCoords.y, vehCoords.z)
                             SetEntityCollision(cache.ped, true, true)
                             TrunkCam(false)
                         else
-                            ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
+                            ESX.ShowNotification(Translations[Config.Local].error.trunk_closed, 'error', 2500)
                         end
                         Wait(100)
                     end
                     if GetVehicleDoorAngleRatio(vehicle, 5) > 0 then
-                        DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.5, Lang:t("general.close_trunk_button"))
+                        DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.5, Translations[Config.Local].general.close_trunk_button)
                         if IsControlJustPressed(0, 47) then
                             if not IsVehicleSeatFree(vehicle, -1) then
-                                TriggerServerEvent('qb-radialmenu:trunk:server:Door', false, plate, 5)
+                                TriggerServerEvent('radialmenu:trunk:server:Door', false, plate, 5)
                             else
                                 SetVehicleDoorShut(vehicle, 5, false)
                             end
                             Wait(100)
                         end
                     else
-                        DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.5, Lang:t("general.open_trunk_button"))
+                        DrawText3Ds(drawPos.x, drawPos.y, drawPos.z + 0.5, Translations[Config.Local].general.open_trunk_button)
                         if IsControlJustPressed(0, 47) then
                             if not IsVehicleSeatFree(vehicle, -1) then
-                                TriggerServerEvent('qb-radialmenu:trunk:server:Door', true, plate, 5)
+                                TriggerServerEvent('radialmenu:trunk:server:Door', true, plate, 5)
                             else
                                 SetVehicleDoorOpen(vehicle, 5, false, false)
                             end

@@ -1,4 +1,4 @@
-local Translations = {
+Translations["en"] = {
     error = {
         no_people_nearby = "No players nearby",
         no_vehicle_found = "No vehicle found",
@@ -59,8 +59,3 @@ local Translations = {
         rear_right_seat = "Rear Right Seat"
     },
 }
-
-Lang = Lang or Locale:new({
-    phrases = Translations,
-    warnOnMissing = true
-})

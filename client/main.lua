@@ -43,27 +43,27 @@ local function AddVehicleSeats()
         while true do
             Wait(50)
             if IsControlJustPressed(0, 23) and not cache.vehicle then
-                local vehicle, _ = QBCore.Functions.GetClosestVehicle(GetEntityCoords(cache.ped))
+                local vehicle, _ = ESX.Game.GetClosestVehicle(GetEntityCoords(cache.ped))
                 if vehicle then
                     local vehicleseats = {}
                     local seatTable = {
-                        [1] = Lang:t("options.driver_seat"),
-                        [2] = Lang:t("options.passenger_seat"),
-                        [3] = Lang:t("options.rear_left_seat"),
-                        [4] = Lang:t("options.rear_right_seat"),
+                        [1] = Translations[Config.Local].options.driver_seat,
+                        [2] = Translations[Config.Local].options.passenger_seat,
+                        [3] = Translations[Config.Local].options.rear_left_seat,
+                        [4] = Translations[Config.Local].options.rear_right_seat,
                     }
 
                     local AmountOfSeats = GetVehicleModelNumberOfSeats(GetEntityModel(vehicle))
                     for i = 1, AmountOfSeats do
                         vehicleseats[#vehicleseats+1] = {
                             id = 'vehicleseat'..i,
-                            label = seatTable[i] or Lang:t("options.other_seats"),
+                            label = seatTable[i] or Translations[Config.Local].options.other_seats,
                             icon = 'caret-up',
                             onSelect = function()
                                 if cache.vehicle then
-                                    TriggerEvent('radialmenu:client:ChangeSeat', i, seatTable[i] or Lang:t("options.other_seats"))
+                                    TriggerEvent('radialmenu:client:ChangeSeat', i, seatTable[i] or Translations[Config.Local].options.other_seats)
                                 else
-                                    ESX.ShowNotification(Lang:t('error.not_in_vehicle'), 'error')
+                                    ESX.ShowNotification(Translations[Config.Local].error.not_in_vehicle, 'error')
                                 end
                                 lib.hideRadial()
                             end,
@@ -82,14 +82,14 @@ end
 local function SetupVehicleMenu()
     local VehicleMenu = {
         id = 'vehicle',
-        label = Lang:t("options.vehicle"),
+        label = Translations[Config.Local].options.vehicle,
         icon = 'car',
         menu = 'vehiclemenu'
     }
     
     local vehicleitems = {{
         id = 'vehicle-flip',
-        label = Lang:t("options.flip"),
+        label = Translations[Config.Local].options.flip,
         icon = 'car-burst',
         onSelect = function()
             TriggerEvent('radialmenu:flipVehicle')
@@ -121,7 +121,7 @@ local function SetupRadialMenu()
     if Config.GangInteractions[PlayerData.gang.name] then
         lib.addRadialItem(convert({
             id = 'ganginteractions',
-            label = Lang:t("general.gang_radial"),
+            label = Translations[Config.Local].general.gang_radial,
             icon = 'skull-crossbones',
             items = Config.GangInteractions[PlayerData.gang.name]
         }))
@@ -132,7 +132,7 @@ local function SetupRadialMenu()
 
     lib.addRadialItem(convert({
         id = 'jobinteractions',
-        label = Lang:t("general.job_radial"),
+        label = Translations[Config.Local].general.job_radial,
         icon = 'briefcase',
         items = Config.JobInteractions[PlayerData.job.name]
     }))
@@ -154,7 +154,7 @@ RegisterNetEvent('radialmenu:client:deadradial', function(isDead)
         lib.clearRadialItems()
         lib.addRadialItem({
             id = 'emergencybutton2',
-            label = Lang:t("options.emergency_button"),
+            label = Translations[Config.Local].options.emergency_button,
             icon = 'circle-exclamation',
             onSelect = function (_, _)
                 if ispolice then
@@ -178,28 +178,28 @@ RegisterNetEvent('radialmenu:client:ChangeSeat', function(id, label)
     local speed = GetEntitySpeed(Veh)
     local HasHarness = exports['qb-smallresources']:HasHarness()
     if HasHarness then
-        return ESX.ShowNotification(Lang:t("error.race_harness_on"), 'error')
+        return ESX.ShowNotification(Translations[Config.Local].error.race_harness_on, 'error')
     end
 
     if not IsSeatFree then
-       return ESX.ShowNotification(Lang:t("error.seat_occupied"), 'error')
+       return ESX.ShowNotification(Translations[Config.Local].error.seat_occupied, 'error')
     end
     
     local kmh = speed * 3.6
     
     if kmh > 100.0 then
-       return ESX.ShowNotification(Lang:t("error.vehicle_driving_fast"), 'error')
+       return ESX.ShowNotification(Translations[Config.Local].error.vehicle_driving_fast, 'error')
     end
     
     SetPedIntoVehicle(cache.ped, Veh, id - 2)
-    ESX.ShowNotification(Lang:t("info.switched_seats", {seat = label}))
+    ESX.ShowNotification(Translations[Config.Local].info.switched_seats))
 end)
 
-RegisterNetEvent('qb-radialmenu:trunk:client:Door', function(plate, door, open)
+RegisterNetEvent('radialmenu:trunk:client:Door', function(plate, door, open)
     local veh = cache.vehicle
     if not veh then return end
     
-    local pl = QBCore.Functions.GetPlate(veh)
+    local pl = GetVehicleNumberPlateText(veh)
     if pl ~= plate then return end
     
     if open then
@@ -209,25 +209,25 @@ RegisterNetEvent('qb-radialmenu:trunk:client:Door', function(plate, door, open)
     end
 end)
 
-RegisterNetEvent('qb-radialmenu:client:noPlayers', function()
-    ESX.ShowNotification(Lang:t("error.no_people_nearby"), 'error', 2500)
+RegisterNetEvent('radialmenu:client:noPlayers', function()
+    ESX.ShowNotification(Translations[Config.Local].error.no_people_nearby, 'error', 2500)
 end)
 
-RegisterNetEvent('qb-radialmenu:client:openDoor', function(id)
+RegisterNetEvent('radialmenu:client:openDoor', function(id)
     local door = id
-    local closestVehicle = cache.vehicle or QBCore.Functions.GetClosestVehicle(GetEntityCoords(cache.ped))
+    local closestVehicle = cache.vehicle or ESX.Game.GetClosestVehicle(GetEntityCoords(cache.ped))
     if closestVehicle ~= 0 then
         if closestVehicle ~= cache.vehicle then
-            local plate = QBCore.Functions.GetPlate(closestVehicle)
+            local plate = GetVehicleNumberPlateText(closestVehicle)
             if GetVehicleDoorAngleRatio(closestVehicle, door) > 0.0 then
                 if not IsVehicleSeatFree(closestVehicle, -1) then
-                    TriggerServerEvent('qb-radialmenu:trunk:server:Door', false, plate, door)
+                    TriggerServerEvent('radialmenu:trunk:server:Door', false, plate, door)
                 else
                     SetVehicleDoorShut(closestVehicle, door, false)
                 end
             else
                 if not IsVehicleSeatFree(closestVehicle, -1) then
-                    TriggerServerEvent('qb-radialmenu:trunk:server:Door', true, plate, door)
+                    TriggerServerEvent('radialmenu:trunk:server:Door', true, plate, door)
                 else
                     SetVehicleDoorOpen(closestVehicle, door, false, false)
                 end
@@ -240,7 +240,7 @@ RegisterNetEvent('qb-radialmenu:client:openDoor', function(id)
             end
         end
     else
-        ESX.ShowNotification(Lang:t("error.no_vehicle_found"), 'error', 2500)
+        ESX.ShowNotification(Translations[Config.Local].error.no_vehicle_found, 'error', 2500)
     end
 end)
 
@@ -253,16 +253,16 @@ RegisterNetEvent('radialmenu:client:setExtra', function(id)
             if DoesExtraExist(veh, extra) then
                 if IsVehicleExtraTurnedOn(veh, extra) then
                     SetVehicleExtra(veh, extra, 1)
-                    ESX.ShowNotification(Lang:t("error.extra_deactivated", {extra = extra}), 'error', 2500)
+                    ESX.ShowNotification(Translations[Config.Local].error.extra_deactivated, {extra = extra}), 'error', 2500)
                 else
                     SetVehicleExtra(veh, extra, 0)
-                    ESX.ShowNotification(Lang:t("success.extra_activated", {extra = extra}), 'success', 2500)
+                    ESX.ShowNotification(Translations[Config.Local].success.extra_activated, {extra = extra}), 'success', 2500)
                 end
             else
-                ESX.ShowNotification(Lang:t("error.extra_not_present", {extra = extra}), 'error', 2500)
+                ESX.ShowNotification(Translations[Config.Local].error.extra_not_present, {extra = extra}), 'error', 2500)
             end
         else
-            ESX.ShowNotification(Lang:t("error.not_driver"), 'error', 2500)
+            ESX.ShowNotification(Translations[Config.Local].error.not_driver, 'error', 2500)
         end
     end
 end)
@@ -270,19 +270,19 @@ end)
 RegisterNetEvent('radialmenu:flipVehicle', function()
     if cache.vehicle then return end
     TriggerEvent('animations:client:EmoteCommandStart', {"mechanic"})
-    QBCore.Functions.Progressbar("flipping_car", Lang:t("progress.flipping_car"), Config.Fliptime, false, true, {
+    QBCore.Functions.Progressbar("flipping_car", Translations[Config.Local].progress.flipping_car, Config.Fliptime, false, true, {
         disableMovement = true,
         disableCarMovement = true,
         disableMouse = false,
         disableCombat = true,
     }, {}, {}, {}, function() -- Done
-        local vehicle, distance = QBCore.Functions.GetClosestVehicle(GetEntityCoords(cache.ped))
+        local vehicle, distance = ESX.Game.GetClosestVehicle(GetEntityCoords(cache.ped))
         if distance <= 15 then
             SetVehicleOnGroundProperly(vehicle)
         end
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
     end, function() -- Cancel
-        ESX.ShowNotification(Lang:t("error.cancel_task"), "error")
+        ESX.ShowNotification(Translations[Config.Local].error.cancel_task, "error")
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
     end)
 end)
@@ -321,7 +321,7 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     if job.onduty and Config.JobInteractions[job.name] then
        lib.addRadialItem(convert({
             id = 'jobinteractions',
-            label = Lang:t("general.job_radial"),
+            label = Translations[Config.Local].general.job_radial,
             icon = 'briefcase',
             items = Config.JobInteractions[job.name]
         }))
@@ -333,7 +333,7 @@ RegisterNetEvent('QBCore:Client:SetDuty', function(onduty)
     if onduty and Config.JobInteractions[PlayerData.job.name] then
        lib.addRadialItem(convert({
             id = 'jobinteractions',
-            label = Lang:t("general.job_radial"),
+            label = Translations[Config.Local].general.job_radial,
             icon = 'briefcase',
             items = Config.JobInteractions[PlayerData.job.name]
         }))
@@ -346,7 +346,7 @@ RegisterNetEvent('QBCore:Client:OnGangUpdate', function(gang)
     if Config.GangInteractions[gang.name] and next(Config.GangInteractions[gang.name]) then
         lib.addRadialItem(convert({
             id = 'ganginteractions',
-            label = Lang:t("general.gang_radial"),
+            label = Translations[Config.Local].general.gang_radial,
             icon = 'skull-crossbones',
             items = Config.GangInteractions[gang.name]
         }))

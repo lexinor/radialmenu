@@ -6,10 +6,8 @@ version '1.0.0'
 
 
 shared_scripts {
+    "@es_extended/imports.lua",
     'config.lua',
-    '@qb-core/shared/locale.lua',
-    'locales/en.lua',
-    'locales/*.lua',
     '@ox_lib/init.lua'
 }
 
@@ -21,5 +19,5 @@ server_scripts {
     'server/*.lua',
 }
 
-provide 'qb-radialmenu'
+provide 'radialmenu'
 lua54 'yes'

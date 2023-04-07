@@ -1,4 +1,4 @@
-local Translations = {
+Translations["fr"] = {
     error = {
         no_people_nearby = "Aucun joueur n'est à proximité.",
         no_vehicle_found = "Aucun véhicule n'a été retrouvé.",
@@ -60,10 +60,3 @@ local Translations = {
     },
 }
 
-if GetConvar('qb_locale', 'en') == 'fr' then
-    Lang = Locale:new({
-        phrases = Translations,
-        warnOnMissing = true,
-        fallbackLang = Lang,
-    })
-end
