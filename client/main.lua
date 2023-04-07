@@ -1,5 +1,5 @@
-QBCore = exports['qbx-core']:GetCoreObject()
-PlayerData = QBCore.Functions.GetPlayerData()
+
+PlayerData = ESX.GetPlayerData()
 
 -- Functions
 local function convert(table)
@@ -63,7 +63,7 @@ local function AddVehicleSeats()
                                 if cache.vehicle then
                                     TriggerEvent('radialmenu:client:ChangeSeat', i, seatTable[i] or Lang:t("options.other_seats"))
                                 else
-                                    QBCore.Functions.Notify(Lang:t('error.not_in_vehicle'), 'error')
+                                    ESX.ShowNotification(Lang:t('error.not_in_vehicle'), 'error')
                                 end
                                 lib.hideRadial()
                             end,
@@ -178,21 +178,21 @@ RegisterNetEvent('radialmenu:client:ChangeSeat', function(id, label)
     local speed = GetEntitySpeed(Veh)
     local HasHarness = exports['qb-smallresources']:HasHarness()
     if HasHarness then
-        return QBCore.Functions.Notify(Lang:t("error.race_harness_on"), 'error')
+        return ESX.ShowNotification(Lang:t("error.race_harness_on"), 'error')
     end
 
     if not IsSeatFree then
-       return QBCore.Functions.Notify(Lang:t("error.seat_occupied"), 'error')
+       return ESX.ShowNotification(Lang:t("error.seat_occupied"), 'error')
     end
     
     local kmh = speed * 3.6
     
     if kmh > 100.0 then
-       return QBCore.Functions.Notify(Lang:t("error.vehicle_driving_fast"), 'error')
+       return ESX.ShowNotification(Lang:t("error.vehicle_driving_fast"), 'error')
     end
     
     SetPedIntoVehicle(cache.ped, Veh, id - 2)
-    QBCore.Functions.Notify(Lang:t("info.switched_seats", {seat = label}))
+    ESX.ShowNotification(Lang:t("info.switched_seats", {seat = label}))
 end)
 
 RegisterNetEvent('qb-radialmenu:trunk:client:Door', function(plate, door, open)
@@ -210,7 +210,7 @@ RegisterNetEvent('qb-radialmenu:trunk:client:Door', function(plate, door, open)
 end)
 
 RegisterNetEvent('qb-radialmenu:client:noPlayers', function()
-    QBCore.Functions.Notify(Lang:t("error.no_people_nearby"), 'error', 2500)
+    ESX.ShowNotification(Lang:t("error.no_people_nearby"), 'error', 2500)
 end)
 
 RegisterNetEvent('qb-radialmenu:client:openDoor', function(id)
@@ -240,7 +240,7 @@ RegisterNetEvent('qb-radialmenu:client:openDoor', function(id)
             end
         end
     else
-        QBCore.Functions.Notify(Lang:t("error.no_vehicle_found"), 'error', 2500)
+        ESX.ShowNotification(Lang:t("error.no_vehicle_found"), 'error', 2500)
     end
 end)
 
@@ -253,16 +253,16 @@ RegisterNetEvent('radialmenu:client:setExtra', function(id)
             if DoesExtraExist(veh, extra) then
                 if IsVehicleExtraTurnedOn(veh, extra) then
                     SetVehicleExtra(veh, extra, 1)
-                    QBCore.Functions.Notify(Lang:t("error.extra_deactivated", {extra = extra}), 'error', 2500)
+                    ESX.ShowNotification(Lang:t("error.extra_deactivated", {extra = extra}), 'error', 2500)
                 else
                     SetVehicleExtra(veh, extra, 0)
-                    QBCore.Functions.Notify(Lang:t("success.extra_activated", {extra = extra}), 'success', 2500)
+                    ESX.ShowNotification(Lang:t("success.extra_activated", {extra = extra}), 'success', 2500)
                 end
             else
-                QBCore.Functions.Notify(Lang:t("error.extra_not_present", {extra = extra}), 'error', 2500)
+                ESX.ShowNotification(Lang:t("error.extra_not_present", {extra = extra}), 'error', 2500)
             end
         else
-            QBCore.Functions.Notify(Lang:t("error.not_driver"), 'error', 2500)
+            ESX.ShowNotification(Lang:t("error.not_driver"), 'error', 2500)
         end
     end
 end)
@@ -282,7 +282,7 @@ RegisterNetEvent('radialmenu:flipVehicle', function()
         end
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
     end, function() -- Cancel
-        QBCore.Functions.Notify(Lang:t("error.cancel_task"), "error")
+        ESX.ShowNotification(Lang:t("error.cancel_task"), "error")
         TriggerEvent('animations:client:EmoteCommandStart', {"c"})
     end)
 end)
@@ -301,7 +301,7 @@ end)
 
 -- Sets the metadata when the player spawns
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData()
+    PlayerData = ESX.GetPlayerData()
     SetupRadialMenu()
 end)
 

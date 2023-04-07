@@ -934,7 +934,7 @@ function IncurCooldown(ms)
 end
 
 function Notify(message, color) -- However you want your notifications to be shown, you can switch it up here.
-	QBCore.Functions.Notify(message, color)
+	ESX.ShowNotification(message, color)
 end
 
 function IsMpPed(ped)

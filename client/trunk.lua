@@ -78,7 +78,7 @@ RegisterNetEvent('qb-trunk:client:KidnapTrunk', function()
                 TriggerServerEvent("qb-trunk:server:KidnapTrunk", GetPlayerServerId(closestPlayer), closestVehicle)
             end
         else
-            QBCore.Functions.Notify(Lang:t("error.not_kidnapped"), 'error')
+            ESX.ShowNotification(Lang:t("error.not_kidnapped"), 'error')
         end
     end
 end)
@@ -109,11 +109,11 @@ RegisterNetEvent('qb-trunk:client:KidnapGetIn', function(veh)
                                 inTrunk = true
                                 Wait(500)
                                 SetVehicleDoorShut(closestVehicle, 5, false)
-                                QBCore.Functions.Notify(Lang:t("success.entered_trunk"), 'success', 4000)
+                                ESX.ShowNotification(Lang:t("success.entered_trunk"), 'success', 4000)
                                 TrunkCam(true)
                                 isKidnapped = true
                             else
-                                QBCore.Functions.Notify(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
                             end
                         else
                             local vehicle = GetEntityAttachedTo(cache.ped)
@@ -128,21 +128,21 @@ RegisterNetEvent('qb-trunk:client:KidnapGetIn', function(veh)
                                 SetEntityCollision(cache.ped, true, true)
                                 TrunkCam(false)
                             else
-                                QBCore.Functions.Notify(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
                             end
                         end
                     else
-                        QBCore.Functions.Notify(Lang:t("error.someone_in_trunk"), 'error', 2500)
+                        ESX.ShowNotification(Lang:t("error.someone_in_trunk"), 'error', 2500)
                     end
                 else
-                    QBCore.Functions.Notify(Lang:t("error.already_in_trunk"), 'error', 2500)
+                    ESX.ShowNotification(Lang:t("error.already_in_trunk"), 'error', 2500)
                 end
             else
-                QBCore.Functions.Notify(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+                ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
             end
         end, plate)
     else
-        QBCore.Functions.Notify(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+        ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
     end
 end)
 
@@ -172,26 +172,26 @@ RegisterNetEvent('qb-trunk:client:GetIn', function()
                                 inTrunk = true
                                 Wait(500)
                                 SetVehicleDoorShut(closestVehicle, 5, false)
-                                QBCore.Functions.Notify(Lang:t("success.entered_trunk"), 'success', 4000)
+                                ESX.ShowNotification(Lang:t("success.entered_trunk"), 'success', 4000)
                                 TrunkCam(true)
                             else
-                                QBCore.Functions.Notify(Lang:t("error.trunk_closed"), 'error', 2500)
+                                ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
                             end
                         else
-                            QBCore.Functions.Notify(Lang:t("error.someone_in_trunk"), 'error', 2500)
+                            ESX.ShowNotification(Lang:t("error.someone_in_trunk"), 'error', 2500)
                         end
                     else
-                        QBCore.Functions.Notify(Lang:t("error.already_in_trunk"), 'error', 2500)
+                        ESX.ShowNotification(Lang:t("error.already_in_trunk"), 'error', 2500)
                     end
                 else
-                    QBCore.Functions.Notify(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+                    ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
                 end
             end, plate)
         else
-            QBCore.Functions.Notify(Lang:t("error.cant_enter_trunk"), 'error', 2500)
+            ESX.ShowNotification(Lang:t("error.cant_enter_trunk"), 'error', 2500)
         end
     else
-        QBCore.Functions.Notify(Lang:t("error.no_vehicle_found"), 'error', 2500)
+        ESX.ShowNotification(Lang:t("error.no_vehicle_found"), 'error', 2500)
     end
 end)
 
@@ -234,7 +234,7 @@ CreateThread(function()
                             SetEntityCollision(cache.ped, true, true)
                             TrunkCam(false)
                         else
-                            QBCore.Functions.Notify(Lang:t("error.trunk_closed"), 'error', 2500)
+                            ESX.ShowNotification(Lang:t("error.trunk_closed"), 'error', 2500)
                         end
                         Wait(100)
                     end
